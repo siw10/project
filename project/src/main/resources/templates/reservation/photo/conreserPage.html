@@ -9,7 +9,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/blog/">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<title>예약페이지</title>
+<title>>견생사진예약페이지</title>
 
 </head>
 <body>
@@ -19,27 +19,31 @@
      <img src="/resources/images/with dog16.jpg" alt="My Image" width="400" height="570" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <section>
     
-  <h1 style="font-size: 30px; font-weight: bold; ">멍멍이와 함께</h1> 
+  <h1 style="font-size: 30px; font-weight: bold; ">견생사진</h1> 
     <form name="id"  style="font-size: 15px; ">
      <input type="hidden" id="btype" value="포토">
-     <input type="hidden" id="themeName" value="멍멍이와 함께">
+     <input type="hidden" id="themeName" value="견생사진">
      <input type="hidden" id="phone" th:value="${user.getUserTel()}" >
      <input type="hidden" id="username" th:value="${user.getUsername()}">
+     <input type="hidden" id="dogSizePrice" th:value="${price.getDogSizePrice()}">
+     <input type="hidden" id="pictureSizePrice" th:value="${price.getPictureSizePrice()}">
+     <input type="hidden" id="dogNumPrice" th:value="${price.getDogNumPrice()}">
+     <input type="hidden" id="peopleNumPrice" th:value="${price.getPeopleNumPrice()}">
+     <input type="hidden" id="basicPrice" th:value="${price.getConPrice()}">
       1.신청자명<br>
       <input type="text" class="form-control"name="name" id="name" th:value="${user.getName()}" style="width:150px;height: 30px;">
       <br>
         <br>2.촬영선택
       <br>&nbsp;&nbsp;-애완견<br>
-      <input type="radio" name="dogSize" id="dogSize1" value="소형견"> 01.소형견<br>
-      <input type="radio" name="dogSize" id="dogSize2" value="중형견"> 02.중형견(+2000원)<br>
-      <input type="radio" name="dogSize" id="dogSize3" value="대형견"> 03.대형견(+3000원)
+      <input type="radio" name="dogSize" id="dogSize1" value="소형견" checked="checked"> 01.소형견<br>
+      <input type="radio" name="dogSize" id="dogSize2" value="중형견" > 02.중형견(+<span th:text="${price.getDogSizePrice()}"></span>원)<br>
+      <input type="radio" name="dogSize" id="dogSize3" value="대형견"> 02.대형견(+<span th:text="${price.getDogSizePrice()}+1000"></span>원)
       <br><br>&nbsp;&nbsp;-액자 크기<br> 
-      <input type="radio" name="pictureSize" id="pictureSize1" value="소형"> 01.소형<br>
-      <input type="radio" name="pictureSize" id="pictureSize2" value="중형"> 02.중형(+2000원)<br>
-       <input type="radio" name="pictureSize"id="pictureSize3" value="대형">03.대형(+3000원)<br>
-       <br>3.촬영 구성원<br>
-        <input type="radio" name="people" id="people" value="5인 이상"> 5인 이상(+10000원)<br>
-      <br>4.촬영 희망 날짜<br> 
+      <input type="radio" name="pictureSize" id="pictureSize1" value="소형" checked="checked"> 01.소형<br>
+      <input type="radio" name="pictureSize" id="pictureSize2" value="중형"> 02.중형(+<span th:text="${price.getPictureSizePrice()}"></span>원)<br>
+       <input type="radio" name="pictureSize"id="pictureSize3" value="대형"> 03.대형(+<span th:text="${price.getPictureSizePrice()}+1000"></span>원)<br>
+       
+      <br>3.촬영 희망 날짜<br> 
       <input type="text" class="form-control"  id="bookingDate" name="bookingDate" readonly="readonly" style="background-color: white">
       
 </form>
@@ -47,7 +51,9 @@
  </div>
 </div> <br><br><br><br>
 <div class="cartbtn" style=" display: flex; justify-content: center; " >
-      <p style="  font-align: center;">주문 금액:45,000원</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	  <p style="  font-align: center;">주문 금액:</p>
+      <p style="  font-align: center;" id="price" th:text="${price.getConPrice()}" th:value="${price.getConPrice()}">주문 금액:45,000원</p>
+      <p style="  font-align: center;">원</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
            <button class="btn btn-secondary" id="cartBtn" type="submit" value="submit">장바구니</button>&emsp;&emsp;&emsp;
            <button class="btn btn-secondary" id="btn-save" >결제하기</button>

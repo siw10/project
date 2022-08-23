@@ -6,9 +6,11 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, 그리고 Bootstrap 기여자들">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>관리자페이지</title>
+    <title>예약내역 상세보기</title>
 
     <link rel="canonical" href="https://getbootstrap.kr/docs/5.1/examples/dashboard/">
+
+    
 
     <!-- Bootstrap core CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -64,17 +66,20 @@
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/admin/adminPage">
-              <span data-feather="home">회원관리</span>
+              <span data-feather="home"></span>
+              회원관리
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/admin/adminPage2">
-              <span data-feather="file">이용내역</span>
+              <span data-feather="file"></span>
+              이용내역
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/admin/adminPage3">
-              <span data-feather="shopping-cart">예약내역관리</span>
+              <span data-feather="shopping-cart"></span>
+              예약내역관리
             </a>
           </li>
           <li class="nav-item">
@@ -89,7 +94,7 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">회원관리</h1>
+        <h1 class="h2">가격설정</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -101,55 +106,83 @@
           </button>
         </div>
       </div>
-
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th scope="col">아이디</th>
-              <th scope="col">이름</th>
-              <th scope="col">현재 권한</th>
-              <th scope="col">권한 변경</th>
-              <th scope="col">이메일</th>
-              <th scope="col">전화번호</th>
-              <th scope="col">가입날짜</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr th:each="users : ${userList}">
-          	<form th:action="@{/admin/roleModify/{username}(username=${users.username})}" method="post">
-              <td th:text="${users.getUsername()}">1</td>
-              <td th:text="${users.getName()}">name</td>
-              <td th:text="${users.getRole()}">role</td>
-              <td>
-                  <select id="role" name="role">
-                      <option value="ROLE_MANAGER">ROLE_MANAGER</option>
-                      <option value="ROLE_USER">ROLE_USER</option>
-                      <option value="ROLE_ADMIN">ROLE_ADMIN</option>
-                  </select>
-              </td>
-              <td th:text="${users.getEmail()}">email</td>
-              <td th:text="${users.getUserTel()}">money</td>
-              <td th:text="${users.getCreateDate()}">createdate</td>
-              <td>
-                  <button class="btn btn-outline-dark flex-shrink-0" id="btn-update" type="submit">
-                      업데이트
-                  </butoon>
-              </td>
-	      	</form>
-          </tr>
-            
-
-          </tbody>
-        </table>
-      </div>
+	
+	  <form>	  
+		  <div>
+		  	<input type="hidden" id="pno" th:value="${priceDetail.getPno()}">
+		  	<h5>견생사진 기본가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getConPrice()}" id="conPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>증멍사진 기본가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getIdPrice()}" id="idPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>멍멍이와 함께 기본가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getFamilyPrice()}" id="familyPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>멍스파 기본가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getSpaPrice()}" id="spaPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>멍수영장 기본가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getSwimPrice()}" id="swimPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>애완견사이즈 옵션가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getDogSizePrice()}" id="dogSizePrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>액자사이즈 옵션가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getPictureSizePrice()}" id="pictureSizePrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>인원수 옵션가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getPeopleNumPrice()}" id="peopleNumPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  	<h5>강아지 마리 수 옵션가격</h5>
+		  	<div class="input-group">
+			  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" th:value="${priceDetail.getDogNumPrice()}" id="dogNumPrice"></input>
+			  <span class="input-group-text">원</span>
+			</div>
+			<br>
+		  </div>
+			<br>
+			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+			
+     		 <button type="button" class="btn btn-primary" id="btn-update">가격 변경하기</button>
+		  	<br><br><br><br><br>
+	  </form>
+	  
+	  
     </main>
   </div>
 </div>
 
 
-	<!-- <script src="/js/admin.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="/js/admin.js"></script> 
   </body>
 </html>

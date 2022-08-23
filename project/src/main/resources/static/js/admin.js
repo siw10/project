@@ -6,7 +6,7 @@ let index = {
         // jQuery 사용
         
         
-        $("#btn-update").on("click", () => {
+       $("#btn-update").on("click", () => {
             this.update();
         });
 		
@@ -16,18 +16,22 @@ let index = {
 
      update: function () {
         let data = {
-            username: $("#username").val(),
-            password: $("#password").val(),
-            email: $("#email").val(),
-            name: $("#name").val(),
-            role: $("#role").val(),
-            userTel: $("#userTel").val(),
+			pno:$("#pno").val(),
+            conPrice: $("#conPrice").val(),
+            dogNumPrice: $("#dogNumPrice").val(),
+            dogSizePrice: $("#dogSizePrice").val(),
+            familyPrice: $("#familyPrice").val(),
+            idPrice: $("#idPrice").val(),
+            peopleNumPrice: $("#peopleNumPrice").val(),
+            pictureSizePrice: $("#pictureSizePrice").val(),
+            spaPrice: $("#spaPrice").val(),
+            swimPrice: $("#swimPrice").val()
 			            
         }
 
         $.ajax({
             type: "PUT",
-            url: "/roleModify",
+            url: "/priceModify",
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -38,7 +42,7 @@ let index = {
             alert("통신에 에러가 발생했습니다. 잠시 후 다시 시도해주세요.");
         });
 
-    },
+    }
     
 
 }

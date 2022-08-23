@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.keduit.project.config.auth.PrincipalDetails;
 import com.keduit.project.model.BookingVo;
+import com.keduit.project.model.PriceVo;
 import com.keduit.project.model.RoleType;
 import com.keduit.project.model.User;
 import com.keduit.project.repository.BookingRepository;
+import com.keduit.project.repository.PriceRepository;
 import com.keduit.project.repository.UserRepository;
 import com.keduit.project.service.BookingService;
 import com.keduit.project.service.UserService;
@@ -38,6 +40,9 @@ public class UserController {
 	
 	@Autowired
 	private BookingRepository bookingRepository;
+	
+	@Autowired
+	private PriceRepository priceRepository;
 	
 	@Autowired
 	private UserService userService;
@@ -96,106 +101,40 @@ public class UserController {
         return "updateForm";
     }
 	
-//    @GetMapping("/bookingPage")
-//    public String reservationPage(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
-//    	ArrayList<String> disabledDayList = bookingService.findDisabledDays();	
-//    	
-//    	for(int i=0; i<disabledDayList.size(); i++) {
-//    		System.out.println("비활성화 날짜 : " + disabledDayList.get(i));
-//    	}
-//    	
-//        model.addAttribute("user", principalDetail.getUser());
-//        model.addAttribute("disabledDayList",disabledDayList);
-//        return "/bookingPage";
-//    }
-    @GetMapping("/reservation/familyreserPage")
-    public String reservationPage(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
+
+    @GetMapping("/reservation/photo/{url}")
+    public String photoReservationPage(@PathVariable String url,Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
     	ArrayList<String> disabledDayList = bookingService.findDisabledDays("포토");	
     	
+    	List<PriceVo> priceVo = priceRepository.findAll();
     	model.addAttribute("user", principalDetail.getUser());
     	model.addAttribute("disabledDayList",disabledDayList);
-    	return "reservation/familyreserPage";
+    	model.addAttribute("price",priceVo.get(0));
+		
+    	return "reservation/photo/"+url;
     }
-    
+    @GetMapping("/reservation/spaSwim/{url}")
+    public String spaPoolReservationPage(@PathVariable String url,Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
+    	String btype;
+    	if(url.equals("spareserPage")) {
+    		btype="스파";
+    	}else {
+    		btype="수영장";
+    	}
+    	ArrayList<String> disabledDayList = bookingService.findDisabledDays(btype);	
+    	
+    	List<PriceVo> priceVo = priceRepository.findAll();
+    	model.addAttribute("user", principalDetail.getUser());
+    	model.addAttribute("disabledDayList",disabledDayList);
+    	model.addAttribute("price",priceVo.get(0));
+    	return "reservation/spaSwim/"+url;
+    }
+
     @GetMapping("/deleteForm")
     public String deleteForm() {
     	return "deleteForm";
     }
 	
    
-    @GetMapping("/admin/adminPage")
-    public String adminPage(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
-    	
-    	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
-    		
-    		List<User> userList = userRepository.findAll();
-    		model.addAttribute("userList",userList);
-    		
-    		return "admin/adminPage";
-    	}
-    	
-    	return "redirect:/user";
-    }
-    
-    @GetMapping("/admin/adminPage2")
-    public String adminPage2(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
-    	
-    	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
-    		
-    		LocalDate now = LocalDate.now();
-    		List<BookingVo> bookingList = bookingRepository.findPastBooking(now);
-    		
-    		model.addAttribute("bookingList",bookingList);
-    		
-    		return "admin/adminPage2";
-    	}
-    	
-    	return "redirect:/user";
-    }
-    @GetMapping("/admin/adminPage3")
-    public String adminPage3(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
-    	
-    	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
-    		
-    		LocalDate now = LocalDate.now();
-    		List<BookingVo> bookingList = bookingRepository.findBookingList(now);
-    		
-    		model.addAttribute("bookingList",bookingList);
-    		
-    		return "admin/adminPage3";
-    	}
-    	
-    	return "redirect:/user";
-    }
-    
-    
-    
-    @PostMapping("/admin/roleModify/{username}")
-    public String updateRole(@PathVariable("username") String username, User user,@AuthenticationPrincipal PrincipalDetails principalDetail) {
-    	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
-    		userService.userModify(user);
-    		
-    		return "redirect:/admin/adminPage";
-    	}
 
-    	return "redirect:/user";
-    }
-    
-    @PostMapping("/admin/bookingDetail/{bno}")
-    public String bookingDeatial(@PathVariable("bno") Long bno, BookingVo bookingVo,@AuthenticationPrincipal PrincipalDetails principalDetail, Model model) {
-    	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
-    		BookingVo bookingDetail = bookingRepository.findByBno(bno);
-    		
-    		model.addAttribute("bookingDetail", bookingDetail);
-    		
-    		return "admin/bookingDetailPage";
-    	}
-    	
-    	return "redirect:/user";
-    }
 }
