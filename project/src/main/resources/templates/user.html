@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>마이페이지</title>
+</head>
+<body>
+	<h1>마이페이지</h1>
+	<span th:text="${user.username}"></span>님의 마이페이지 <br>
+	<a href="/updateForm">회원정보 변경</a>
+	<a href="/userDelete">회원정보 삭제</a>
+</body>
+</html>
