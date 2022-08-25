@@ -69,7 +69,7 @@ public class AdminController {
     		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
+    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN || principalDetail.getUser().getRole() == RoleType.ROLE_MANAGER) {
     		
 			/* Page<User> userList = userRepository.findAll(pageable); */
     		Page<User> userList = userRepository.findByUsernameContainingOrNameContaining(searchText, searchText, pageable);
@@ -93,7 +93,7 @@ public class AdminController {
     		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
+    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN|| principalDetail.getUser().getRole() == RoleType.ROLE_MANAGER) {
     		
     		Page<BookingVo> bookingList = adminService.pastContentList(searchText,pageable);
     		
@@ -116,7 +116,7 @@ public class AdminController {
     		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
+    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN|| principalDetail.getUser().getRole() == RoleType.ROLE_MANAGER) {
     		
     		Page<BookingVo> bookingList = adminService.findBookingList(searchText,pageable);
     		
@@ -146,7 +146,7 @@ public class AdminController {
     		return "admin/adminPage4";
     	}
     	
-    	return "redirect:/user";
+    	return "admin/adminPage";
     }
     
     
@@ -158,15 +158,17 @@ public class AdminController {
     		userService.userModify(user);
     		
     		return "redirect:/admin/adminPage";
+    		
+    	}else {
+    		return "redirect:/admin/adminPage";
     	}
 
-    	return "redirect:/user";
     }
     
     @PostMapping("/admin/bookingDetail/{bno}")
     public String bookingDeatial(@PathVariable("bno") Long bno, BookingVo bookingVo,@AuthenticationPrincipal PrincipalDetails principalDetail, Model model) {
     	
-    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
+    	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN || principalDetail.getUser().getRole() == RoleType.ROLE_MANAGER) {
     		BookingVo bookingDetail = bookingRepository.findByBno(bno);
     		
     		ArrayList<String> disabledDayList = bookingService.findDisabledDays(bookingDetail.getBtype());	
