@@ -8,13 +8,14 @@
     <meta name="generator" content="Hugo 0.88.1">
     <title>예약내역 상세보기</title>
 
-    <link rel="canonical" href="https://getbootstrap.kr/docs/5.1/examples/dashboard/">
-
-    
 
     <!-- Bootstrap core CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/5.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -44,6 +45,7 @@
     
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
+
   </head>
   <body>
     
@@ -107,7 +109,7 @@
 		
 	  	<h5>예약번호</h5>
 	  	<ul class="list-group">
-		  <li class="list-group-item" th:text="${bookingDetail.getBno()}">An item</li>
+		  <li class="list-group-item" id="bno" th:text="${bookingDetail.getBno()}">An item</li>
 		</ul>
 		<br>
 	  	<h5>카테고리</h5>
@@ -130,17 +132,28 @@
 		  <li class="list-group-item" th:text="${bookingDetail.getName()}">An item</li>
 		</ul>
 		<br>
-	  	<h5>애완견 사이즈</h5>
-	  	<!-- th:if="${not #strings.isEmpty(user.id)}" -->
-	  	<ul class="list-group">
-		  <li class="list-group-item" th:text="${bookingDetail.getDogSize()}"></li>
-		</ul>
+		<div th:if="${bookingDetail.getDogSize() != null}">
+		  	<h5>애완견 사이즈</h5>
+		  	<!-- th:if="${not #strings.isEmpty(user.id)}" -->
+		  	<ul class="list-group">
+			  <li class="list-group-item" th:text="${bookingDetail.getDogSize()}"></li>
+			</ul>
 		<br>
-	  	<h5>액자 사이즈</h5>
-	  	<ul class="list-group">
-		  <li class="list-group-item" th:text="${bookingDetail.getPictureSize()}"></li>
-		</ul>
-		<br>
+		</div>
+		<div th:if="${bookingDetail.getPictureSize() != null}">
+	  		<h5>액자 사이즈</h5>
+		  	<ul class="list-group">
+			  <li class="list-group-item" th:text="${bookingDetail.getPictureSize()}"></li>
+			</ul>
+			<br>
+		</div>
+		<div th:if="${bookingDetail.getDogNum() != 0}">
+	  		<h5>방문 강아지 마리수</h5>
+		  	<ul class="list-group">
+			  <li class="list-group-item" th:text="${bookingDetail.getDogNum()}"></li>
+			</ul>
+			<br>
+		</div>
 	  	<h5>인원수</h5>
 	  	<ul class="list-group">
 		  <li class="list-group-item" th:text="${bookingDetail.getPeople()}"></li>
@@ -148,7 +161,9 @@
 		<br>
 	  	<h5>예약날짜</h5>
 	  	<ul class="list-group">
-		  <li class="list-group-item" th:text="${bookingDetail.getBookingDate()}"></li>
+	  	<form>
+		  <input class="list-group-item" id="bookingDate" name="bookingDate" th:value="${bookingDetail.getBookingDate()}" readonly="readonly"></input>
+	  	</form>
 		</ul>
 		<br>
 	  	<h5>예약비</h5>
@@ -156,14 +171,96 @@
 		  <li class="list-group-item" th:text="${bookingDetail.getPrice()}"></li>
 		</ul>
 	  </div>
-	  
+	  <br>
+			
+			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                  <button class="btn btn-primary" id="btn-modify" >
+                      수정하기
+                  </button>
+		  	<br><br><br><br><br>
     </main>
   </div>
 </div>
 
 
-	<!-- <script src="/js/admin.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
+	<script src="/js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	
+ 
+
+	
+<script th:inline="javascript">
+
+$.datepicker.setDefaults({
+    dateFormat: 'yy-mm-dd',
+    prevText: '이전 달',
+    nextText: '다음 달',
+    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+    showMonthAfterYear: true,
+    changeMonth: true,
+    changeYear: true,
+    minDate: 0,
+    yearSuffix: '년',
+    beforeShowDay: disableAllTheseDays
+    
+});
+ 
+var disabledDays = /*[[${disabledDayList}]]*/[];
+
+
+
+function disableAllTheseDays(date) {
+
+    var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
+
+    for (i = 0; i < disabledDays.length; i++) {
+		if(m+1<10){
+			if(d<10){
+				if($.inArray(y + '-' +"0"+(m+1) + '-' + "0"+d,disabledDays) != -1) {
+					
+		            return [false];
+		
+		        }
+			}
+	        if($.inArray(y + '-' +"0"+(m+1) + '-' + d,disabledDays) != -1) {
+	
+	            return [false];
+	
+	        }
+		}else{
+			if(d<10){
+				if($.inArray(y + '-' +(m+1) + '-' + "0"+d,disabledDays) != -1) {
+					
+		            return [false];
+		
+		        }
+			}
+			if($.inArray(y + '-' +(m+1)+ '-' +"0"+ d,disabledDays) != -1) {
+				
+	            return [false];
+			}
+		}
+
+    }
+
+    return [true];
+
+}
+
+ 
+ jQuery(function($) {
+    $("#bookingDate" ).datepicker({
+    	beforeShowDay: disableAllTheseDays
+	});
+});
+
+</script>
   </body>
 </html>

@@ -11,11 +11,11 @@
 		var dNumPrice = $("#dogNumPrice").val() - 0;
 		var basicPrice = $("#basicPrice").val() - 0;
 		var temp = 0;
-		var price = $("#price").val();
+		var price = $("#price").text() - 0;
         // jQuery 사용
         $("#btn-save").on("click", () => {
 			if($("#bookingDate").val()!=""){
-				
+				$("#price").val(price);
 	            this.save(); // save함수 이벤트로 호출
 			}else{
 				alert("예약날짜를 선택해주세요.");
@@ -78,7 +78,7 @@
 			}
 			price =  dSizePrice + pSizePrice + pNumPrice + basicPrice;
 			$("#price").text(price);
-				$("#price").val(price);
+			$("#price").val(price);
         });
         
         $('input:checkbox[name=people]').on("click", () => {
@@ -100,7 +100,7 @@
 			}
 			
 			$("#price").text(price);
-				$("#price").val(price);
+			$("#price").val(price);
         });
     },
 
@@ -159,10 +159,6 @@
         });
 
     },
-
-	
-
-
 
 
 }

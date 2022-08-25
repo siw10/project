@@ -9,6 +9,10 @@ let index = {
        $("#btn-update").on("click", () => {
             this.update();
         });
+        
+       $("#btn-modify").on("click", () => {
+            this.modify();
+        });
 		
     },
 
@@ -32,6 +36,28 @@ let index = {
         $.ajax({
             type: "PUT",
             url: "/priceModify",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function (res) {
+            alert(res.data);
+            location.href = "javascript:location.reload()";
+        }).fail(function (error) {
+            alert("통신에 에러가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        });
+
+    },
+    
+     modify: function () {
+        let data = {
+			bno:$("#bno").text(),
+			bookingDate:$("#bookingDate").val()
+			            
+        }
+
+        $.ajax({
+            type: "PUT",
+            url: "/bookingUpdate",
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             dataType: "json"

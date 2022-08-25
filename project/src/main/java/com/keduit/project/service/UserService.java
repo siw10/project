@@ -8,11 +8,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.keduit.project.config.auth.PrincipalDetails;
 import com.keduit.project.model.RoleType;
 import com.keduit.project.model.User;
 import com.keduit.project.repository.UserRepository;
@@ -42,7 +44,7 @@ public class UserService {
     }
 	
 	@Transactional
-	public void userModify(User user) {
+	public User userModify(User user) {
 		
         // 수정시에는 영속성 컨텍스트 User 오브젝트를 영속화시키고, 영속화된 User 오브젝트를 수정한다.
         // SELECT를 해서 User오브젝트를 DB로부터 가져오는 이유는 영속화하기 위해서이다.
@@ -56,20 +58,22 @@ public class UserService {
         	persistance.setRole(user.getRole());
         }else {
         	
-        	String rawPassword = user.getPassword();
-        	String encPassword = encode.encode(rawPassword);
-        	persistance.setPassword(encPassword);
+        	if(user.getPassword() != "") {
+        		String rawPassword = user.getPassword();
+        		String encPassword = encode.encode(rawPassword);
+        		persistance.setPassword(encPassword);
+        		
+        	}
         	persistance.setEmail(user.getEmail());
         	persistance.setUserTel(user.getUserTel());
         	persistance.setDogName(user.getDogName());
         	persistance.setDogType(user.getDogType());
         	persistance.setName(user.getName());
         	
-        	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        	SecurityContextHolder.getContext().setAuthentication(authentication);
+     
         }
         
-
+        return persistance;
 
 
         // 회원수정 함수 종료시 == 서비스 종료 == 트랜잭션 종료 == commit이 자동으로 됨
@@ -110,6 +114,19 @@ public class UserService {
     	System.out.println(username);
     	System.out.println(userRepository.existsByUsername(username));
     	return userRepository.existsByUsername(username);
+    }
+    
+    @Transactional
+    public boolean confirmPassword(String password,User user) {
+    	
+    	if(userRepository.findByUsername(user.getUsername()) !=null) {
+    		if(encode.matches(password, user.getPassword())) {
+    			
+    			return true;
+    		}
+    		return false;
+    	}
+    	return false;
     }
     
 

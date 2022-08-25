@@ -2,6 +2,7 @@ package com.keduit.project.controller.api;
 
 import com.keduit.project.config.auth.PrincipalDetails;
 import com.keduit.project.dto.ResponseDto;
+import com.keduit.project.model.BookingVo;
 import com.keduit.project.model.PriceVo;
 import com.keduit.project.model.User;
 import com.keduit.project.service.AdminService;
@@ -39,7 +40,7 @@ public class AdminApiController {
     // 회원가입
 
     @PutMapping("/priceModify")
-    public ResponseDto<String> update(@RequestBody PriceVo priceVo, @AuthenticationPrincipal PrincipalDetails principalDetail) {
+    public ResponseDto<String> priceUpdate(@RequestBody PriceVo priceVo, @AuthenticationPrincipal PrincipalDetails principalDetail) {
 
         String msg = adminService.priceModify(priceVo,principalDetail.getUser());
         // 여기서는 트랜잭션이 종료되기 때문에 DB값은 변경이 됐음
@@ -51,6 +52,20 @@ public class AdminApiController {
         
 
         return new ResponseDto<String>(HttpStatus.OK.value(), msg);
+    }
+    @PutMapping("/bookingUpdate")
+    public ResponseDto<String> bookingUpdate(@RequestBody BookingVo bookingVo, @AuthenticationPrincipal PrincipalDetails principalDetail) {
+    	
+    	String msg = adminService.bookingModify(bookingVo,principalDetail.getUser());
+    	// 여기서는 트랜잭션이 종료되기 때문에 DB값은 변경이 됐음
+    	// 하지만 세션값은 변경되지 않은 상태이기 때문에 직접 세션 값을 변경해줘야함.
+    	// 한마디로 DB는 회원수정이 이뤄졌지만, 실제 웹에서는 세션정보는 DB수정 전 세션이라는 뜻
+    	// 해결하기 위해서 세션 정보를 직접 변경 해줘야함
+    	
+    	// 세션등록
+    	
+    	
+    	return new ResponseDto<String>(HttpStatus.OK.value(), msg);
     }
 
 

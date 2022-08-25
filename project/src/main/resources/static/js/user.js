@@ -12,8 +12,15 @@ let index = {
 			}
         });
         
+        $("#PwdConfirm").on("click", () => {
+            this.confirmPassword();
+			
+        });
+        
         $("#btn-update").on("click", () => {
-            this.update();
+            
+ 	        this.update(); // save함수 이벤트로 호출
+			
         });
 		
 		$("#btn-delete").on("click", () => {
@@ -120,6 +127,29 @@ let index = {
 			if(result == true){
 	            alert("회원탈퇴가 완료되었습니다.");
 	            location.href = "/loginForm";
+			}else{
+				alert("비밀번호가 일치하지 않습니다.")
+			}
+	    }).fail(function (error) {
+            alert("통신에 실패했습니다. 잠시 후 다시 시도해주세요.");
+	    });
+	},
+	
+    confirmPassword: function(){
+		let data = {
+			password: $("#password").val()
+		}
+	
+	
+		$.ajax({
+			type: "POST",
+			url: "/confirmPassword",
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8",
+	        dataType: "json"
+		}).done(function (result) {
+			if(result == true){
+	            alert("비밀번호 확인이 완료되었습니다.");
 			}else{
 				alert("비밀번호가 일치하지 않습니다.")
 			}

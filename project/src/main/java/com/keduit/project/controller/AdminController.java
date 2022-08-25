@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -19,9 +22,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.keduit.project.config.auth.PrincipalDetails;
+import com.keduit.project.dto.PageDto;
 import com.keduit.project.model.BookingVo;
 import com.keduit.project.model.PriceVo;
 import com.keduit.project.model.RoleType;
@@ -29,8 +34,11 @@ import com.keduit.project.model.User;
 import com.keduit.project.repository.BookingRepository;
 import com.keduit.project.repository.PriceRepository;
 import com.keduit.project.repository.UserRepository;
+import com.keduit.project.service.AdminService;
 import com.keduit.project.service.BookingService;
 import com.keduit.project.service.UserService;
+
+import org.springframework.data.domain.Sort;
 
 @Controller	// View를 리턴
 public class AdminController {
@@ -47,16 +55,31 @@ public class AdminController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private BookingService bookingService;
+	
+	@Autowired
+	private AdminService adminService;
+	
 	
 	
     @GetMapping("/admin/adminPage")
-    public String adminPage(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
+    public String adminPage(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail,
+    		@PageableDefault(page = 0,size = 1, sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable, 
+    		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
     	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
     		
-    		List<User> userList = userRepository.findAll();
+			/* Page<User> userList = userRepository.findAll(pageable); */
+    		Page<User> userList = userRepository.findByUsernameContainingOrNameContaining(searchText, searchText, pageable);
+    		
+    		PageDto<User> userPage = new PageDto<User>(userList);
+    		
     		model.addAttribute("userList",userList);
+    		model.addAttribute("startPage", userPage.getStartPage());
+    		model.addAttribute("endPage", userPage.getEndPage());
+    		
     		
     		return "admin/adminPage";
     	}
@@ -65,15 +88,21 @@ public class AdminController {
     }
     
     @GetMapping("/admin/adminPage2")
-    public String adminPage2(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
+    public String adminPage2(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail,
+    		@PageableDefault(page = 0, size = 2, sort = "bookingDate", direction = Sort.Direction.DESC) Pageable pageable,
+    		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
     	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
     		
-    		LocalDate now = LocalDate.now();
-    		List<BookingVo> bookingList = bookingRepository.findPastBooking(now);
+    		Page<BookingVo> bookingList = adminService.pastContentList(searchText,pageable);
     		
+    		PageDto<BookingVo> bookingPage = new PageDto<BookingVo>(bookingList);
+    		
+    	
     		model.addAttribute("bookingList",bookingList);
+    		model.addAttribute("startPage", bookingPage.getStartPage());
+    		model.addAttribute("endPage", bookingPage.getEndPage());
     		
     		return "admin/adminPage2";
     	}
@@ -82,15 +111,21 @@ public class AdminController {
     }
     
     @GetMapping("/admin/adminPage3")
-    public String adminPage3(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail) {
+    public String adminPage3(Model model,@AuthenticationPrincipal PrincipalDetails principalDetail,
+    		@PageableDefault(page = 0, size = 2, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable pageable,
+    		@RequestParam(required=false, defaultValue="") String searchText) {
     	
     	
     	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
     		
-    		LocalDate now = LocalDate.now();
-    		List<BookingVo> bookingList = bookingRepository.findBookingList(now);
+    		Page<BookingVo> bookingList = adminService.findBookingList(searchText,pageable);
     		
+    		PageDto<BookingVo> bookingPage = new PageDto<BookingVo>(bookingList);
+    		
+    		System.out.print(bookingList.getTotalPages());
     		model.addAttribute("bookingList",bookingList);
+    		model.addAttribute("startPage", bookingPage.getStartPage());
+    		model.addAttribute("endPage", bookingPage.getEndPage());
     		
     		return "admin/adminPage3";
     	}
@@ -134,6 +169,8 @@ public class AdminController {
     	if(principalDetail.getUser().getRole() == RoleType.ROLE_ADMIN) {
     		BookingVo bookingDetail = bookingRepository.findByBno(bno);
     		
+    		ArrayList<String> disabledDayList = bookingService.findDisabledDays(bookingDetail.getBtype());	
+    		model.addAttribute("disabledDayList",disabledDayList);
     		model.addAttribute("bookingDetail", bookingDetail);
     		
     		return "admin/bookingDetailPage";
@@ -141,4 +178,6 @@ public class AdminController {
     	
     	return "redirect:/user";
     }
+    
+
 }

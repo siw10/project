@@ -2,6 +2,8 @@ package com.keduit.project.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,6 +16,9 @@ public interface UserRepository extends JpaRepository<User,Integer>{
 	// select * from user where username = ?     ?에는 파라미터로 들어오는 username이 들어감
 	Optional<User> findByUsername(String username);	//Jpa name 함수
 	
+	Page<User> findAll(Pageable pageable);
+	
+	Page<User> findByUsernameContainingOrNameContaining(String username, String name, Pageable pageable);
 	
 //	public Optional<User> findById(int id);
 	// select * from user where email = ?
