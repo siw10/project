@@ -68,7 +68,6 @@ public class UserService {
         	persistance.setUserTel(user.getUserTel());
         	persistance.setDogName(user.getDogName());
         	persistance.setDogType(user.getDogType());
-        	persistance.setName(user.getName());
         	
      
         }

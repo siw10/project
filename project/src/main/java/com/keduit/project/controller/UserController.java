@@ -95,10 +95,17 @@ public class UserController {
 	
 	
 	
-    @GetMapping("/updateForm")
+    @GetMapping("/myPage/infoChange")
     public String updateForm(Model model, @AuthenticationPrincipal PrincipalDetails principalDetail) {
+        
+        String[] telArr = principalDetail.getUser().getUserTel().split("-");
+        String[] emailArr = principalDetail.getUser().getEmail().split("@");
+        
         model.addAttribute("user", principalDetail.getUser());
-        return "updateForm";
+        model.addAttribute("telList",telArr);
+        model.addAttribute("emailList", emailArr);
+        
+        return "myPage/infoChange";
     }
 	
 

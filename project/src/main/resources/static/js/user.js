@@ -18,8 +18,10 @@ let index = {
         });
         
         $("#btn-update").on("click", () => {
-            
- 	        this.update(); // save함수 이벤트로 호출
+            if(this.updateVali() ==true){
+	
+ 	      		this.update(); // save함수 이벤트로 호출
+			}
 			
         });
 		
@@ -85,12 +87,21 @@ let index = {
 
 
      update: function () {
+		var objEmail = document.getElementById("email");
+		var objEmailAdd = document.getElementById("emailAdd");
+		var objEmailCheck = objEmail.value +"@"+objEmailAdd.value;
+		var objTNumber1 = document.getElementById("tNumber1");
+		var objTNumber2= document.getElementById("tNumber2");
+		var objTNumber3 = document.getElementById("tNumber3");
+		var objPhone = objTNumber1.value+"-"+objTNumber2.value+"-"+objTNumber3.value;
+	
+	
         let data = {
             username: $("#username").val(),
             password: $("#password").val(),
-            email: $("#email").val(),
             name: $("#name").val(),
-            userTel: $("#userTel").val(),
+            email: objEmailCheck,
+            userTel: objPhone,
             dogName: $("#dogName").val(),
             dogType: $("#dogType").val()
             
@@ -104,7 +115,7 @@ let index = {
             dataType: "json"
         }).done(function (res) {
             alert(res.data);
-            location.href = "/";
+            location.href = "javascript:location.reload()";
         }).fail(function (error) {
             alert("통신에 에러가 발생했습니다. 잠시 후 다시 시도해주세요.");
         });
@@ -137,7 +148,7 @@ let index = {
 	
     confirmPassword: function(){
 		let data = {
-			password: $("#password").val()
+			password: $("#userPw").val()
 		}
 	
 	
@@ -150,6 +161,9 @@ let index = {
 		}).done(function (result) {
 			if(result == true){
 	            alert("비밀번호 확인이 완료되었습니다.");
+	            $("#pwdCheck-data").attr('value','pwdCheck');
+				$("#pwdCheck-message").html('비밀번호 확인이 완료되었습니다.');
+				$("#pwdCheck-message").attr('color','green');
 			}else{
 				alert("비밀번호가 일치하지 않습니다.")
 			}
@@ -305,6 +319,9 @@ let index = {
 			
 			objEmailAdd.focus();
 			return false;
+		}else{
+			$("#emailCheck-message").empty();
+			
 		}
 		
 		
@@ -334,13 +351,120 @@ let index = {
 			
 			objTNumber3.focus();
 			return false;
+		}else{
+			$("#phoneCheck-message").empty();
+			
 		}
 		
 		return true;
 		
 		
+	},
+	
+	updateVali: function(){
+		var objEmail = document.getElementById("email");
+		var objEmailAdd = document.getElementById("emailAdd");
+		var objEmailCheck = objEmail.value +"@"+objEmailAdd.value;
+		var objTNumber1 = document.getElementById("tNumber1");
+		var objTNumber2= document.getElementById("tNumber2");
+		var objTNumber3 = document.getElementById("tNumber3");
+		var objPhone = objTNumber1.value+"-"+objTNumber2.value+"-"+objTNumber3.value;
+		var objPwd = document.getElementById("password");
+		var objPwdCheck = document.getElementById("pwdCheck-data");
+		
+		var pwdRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/;	//8~20자, 하나의 이상의 대소문자 및 하나의 숫자, 하나의 특수문자
+		var emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;	//이메일형식
+		var phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+		
+		if(objPwd.value != ''){
+			
+			if(objPwdCheck.value == 'pwdUncheck'){
+				$("#pwdCheck-message").html('비밀번호 확인을 해주세요.');
+				$("#pwdCheck-message").attr('color','red');
+				
+				document.getElementById("userPw").focus();
+				objPwdCheck.focus();
+				return false;
+			}
+			if(!pwdRegex.test(objPwd.value)){
+				$("#pwdCheck1-message").html('비밀번호를 형식에 맞게 입력해주세요.');
+				$("#pwdCheck1-message").attr('color','red');
+				
+				objPwd.focus();
+				return false;
+			}else{
+				$("#pwdCheck1-message").empty();
+				
+			}
+		}
+		
+		
+		
+		if(objEmail.value == '' || objEmailAdd.value == ''){
+			$("#emailCheck-message").html('이메일을 입력해주세요');
+			$("#emailCheck-message").attr('color','red');
+			
+			if(objEmail.value == ''){
+				objEmail.focus();
+			}else{
+				objEmailAdd.focus();
+				
+			}
+			
+			return false;
+		}else{
+			$("#emailCheck-message").empty();
+			
+		}
+		
+		if(!emailRegex.test(objEmailCheck)){
+			$("#emailCheck-message").html('이메일 형식에 맞게 입력해주세요.');
+			$("#emailCheck-message").attr('color','red');
+			
+			objEmailAdd.focus();
+			return false;
+		}else{
+			$("#emailCheck-message").empty();
+			
+		}
+		
+		
+		if(objTNumber1.value == '' || objTNumber2.value == '' || objTNumber3.value == ''){
+			$("#phoneCheck-message").html('전화번호를 입력해주세요');
+			$("#phoneCheck-message").attr('color','red');
+			
+			if(objTNumber1.value == ''){
+				objTNumber1.focus();
+			}else if(objTNumber2.value == ''){
+				objTNumber2.focus();
+				
+			}else{
+				
+				objTNumber3.focus();
+			}
+			
+			return false;
+		}else{
+			$("#phoneCheck-message").empty();
+			
+		}
+		
+		if(!phoneRegex.test(objPhone)){
+			$("#phoneCheck-message").html('전화번호 형식에 맞게 입력해주세요.');
+			$("#phoneCheck-message").attr('color','red');
+			
+			objTNumber3.focus();
+			return false;
+		}else{
+			$("#phoneCheck-message").empty();
+			
+		}
+		
+		return true;
 		
 	}
+	
+	
 
 }
 
